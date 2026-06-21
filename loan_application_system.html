@@ -1,0 +1,973 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.5;background:#f7f8fa;color:#1a1a2e;min-height:100vh;}
+:root{--blue:#1565C0;--blue-light:#e3f0ff;--blue-mid:#2979d0;--green:#1b7a45;--green-light:#e8f5ee;--amber:#b06000;--amber-light:#fff3e0;--red:#c0392b;--red-light:#fdecea;--gray:#64748b;--gray-light:#f1f5f9;--border:#e2e8f0;--white:#fff;--shadow:0 2px 12px rgba(0,0,0,0.07);}
+button{cursor:pointer;font-family:inherit;font-size:14px;border:none;outline:none;}
+
+/* ROLE SELECTOR */
+#role-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0d1b3e 0%,#1565C0 100%);padding:24px;}
+.role-card{background:#fff;border-radius:20px;padding:48px 40px;max-width:520px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);}
+.role-logo{font-size:32px;font-weight:700;color:var(--blue);margin-bottom:8px;letter-spacing:-1px;}
+.role-tagline{color:var(--gray);font-size:14px;margin-bottom:36px;}
+.role-btns{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;}
+.role-btn{border:2px solid var(--border);border-radius:14px;padding:28px 16px;background:#fff;transition:all 0.18s;text-align:center;}
+.role-btn:hover{border-color:var(--blue);background:var(--blue-light);transform:translateY(-2px);}
+.role-btn i{font-size:36px;color:var(--blue);margin-bottom:12px;display:block;}
+.role-btn .rb-title{font-size:16px;font-weight:600;color:#1a1a2e;margin-bottom:4px;}
+.role-btn .rb-desc{font-size:12px;color:var(--gray);}
+
+/* SHARED NAV */
+nav{display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:60px;position:sticky;top:0;z-index:100;}
+.nav-logo{font-size:18px;font-weight:700;color:var(--blue);}
+.nav-user{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--gray);}
+.nav-avatar{width:34px;height:34px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;}
+.nav-back{background:none;color:var(--gray);font-size:13px;display:flex;align-items:center;gap:6px;padding:6px 0;}
+.nav-back:hover{color:var(--blue);}
+
+/* LAYOUT */
+.app-shell{display:flex;min-height:calc(100vh - 60px);}
+.sidebar{width:220px;background:#fff;border-right:1px solid var(--border);padding:20px 12px;flex-shrink:0;}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;font-size:14px;color:var(--gray);cursor:pointer;transition:all 0.15s;margin-bottom:2px;}
+.sidebar-item:hover{background:var(--gray-light);color:#1a1a2e;}
+.sidebar-item.active{background:var(--blue-light);color:var(--blue);font-weight:500;}
+.sidebar-item i{font-size:18px;}
+.sidebar-section{font-size:11px;font-weight:600;color:#b0b9c6;text-transform:uppercase;letter-spacing:.8px;padding:16px 12px 6px;}
+.main-content{flex:1;padding:28px 32px;overflow-y:auto;max-width:1100px;}
+@media(max-width:700px){.sidebar{display:none;}.main-content{padding:16px;}}
+
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;}
+
+/* CARDS */
+.card{background:#fff;border-radius:14px;border:1px solid var(--border);padding:24px;margin-bottom:20px;}
+.card-title{font-size:17px;font-weight:600;margin-bottom:16px;color:#1a1a2e;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:24px;}
+.stat-card{background:#fff;border-radius:12px;border:1px solid var(--border);padding:18px;text-align:center;}
+.stat-num{font-size:28px;font-weight:700;color:var(--blue);}
+.stat-lbl{font-size:12px;color:var(--gray);margin-top:2px;}
+
+/* STATUS BADGES */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;}
+.badge-pending{background:#fff3e0;color:#b06000;}
+.badge-review{background:#e3f0ff;color:#1565C0;}
+.badge-approved{background:#e8f5ee;color:#1b7a45;}
+.badge-rejected{background:#fdecea;color:#c0392b;}
+.badge-doc{background:#f3e8ff;color:#6b21a8;}
+
+/* FORMS */
+.form-group{margin-bottom:18px;}
+label.lbl{display:block;font-size:13px;font-weight:500;color:#4a5568;margin-bottom:6px;}
+input[type=text],input[type=email],input[type=number],select,textarea{width:100%;border:1px solid var(--border);border-radius:9px;padding:10px 14px;font-size:14px;font-family:inherit;background:#fff;color:#1a1a2e;transition:border 0.15s;appearance:none;}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(21,101,192,0.12);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+
+/* LOAN TYPE SELECTOR */
+.loan-types{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px;}
+.loan-type-btn{border:2px solid var(--border);border-radius:12px;padding:18px 10px;background:#fff;text-align:center;transition:all 0.15s;cursor:pointer;}
+.loan-type-btn:hover{border-color:var(--blue);}
+.loan-type-btn.selected{border-color:var(--blue);background:var(--blue-light);}
+.loan-type-btn i{font-size:28px;color:var(--gray);display:block;margin-bottom:8px;}
+.loan-type-btn.selected i{color:var(--blue);}
+.loan-type-btn .lt-name{font-size:13px;font-weight:500;color:#1a1a2e;}
+.loan-type-btn .lt-sub{font-size:11px;color:var(--gray);}
+
+/* UPLOAD ZONE */
+.upload-zone{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all 0.2s;background:#fff;position:relative;}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--blue);background:var(--blue-light);}
+.upload-zone i{font-size:32px;color:var(--gray);margin-bottom:10px;display:block;}
+.upload-zone .uz-title{font-size:14px;font-weight:500;color:#1a1a2e;margin-bottom:4px;}
+.upload-zone .uz-sub{font-size:12px;color:var(--gray);}
+.upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upload-docs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
+.doc-slot{border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.doc-slot-header{padding:12px 14px;background:var(--gray-light);font-size:13px;font-weight:500;display:flex;align-items:center;gap:8px;}
+.doc-slot-header i{color:var(--blue);font-size:17px;}
+.doc-slot .upload-zone{border-radius:0;border:none;border-top:1px dashed var(--border);margin:0;padding:20px 14px;}
+.cam-btn{display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;border-radius:8px;padding:7px 14px;font-size:13px;margin-top:8px;border:none;cursor:pointer;}
+.cam-btn:hover{background:#1251a3;}
+.uploaded-preview{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--green);padding:8px 14px;background:var(--green-light);border-top:1px solid #c3e6d3;}
+.uploaded-preview i{font-size:16px;}
+
+/* CAMERA MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;display:none;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:18px;width:100%;max-width:500px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,0.3);}
+.modal-header{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:16px;font-weight:600;}
+.modal-close{background:none;color:var(--gray);font-size:20px;line-height:1;}
+.modal-close:hover{color:#1a1a2e;}
+.modal-body{padding:20px;}
+#cam-video{width:100%;border-radius:10px;background:#000;aspect-ratio:4/3;object-fit:cover;}
+.cam-controls{display:flex;gap:10px;margin-top:14px;justify-content:center;}
+.btn-capture{background:var(--blue);color:#fff;border-radius:10px;padding:10px 24px;font-size:14px;font-weight:500;}
+.btn-cancel-cam{background:var(--gray-light);color:#1a1a2e;border-radius:10px;padding:10px 20px;font-size:14px;}
+
+/* PROGRESS STEPS */
+.steps{display:flex;align-items:center;margin-bottom:28px;overflow-x:auto;padding-bottom:4px;}
+.step{display:flex;align-items:center;flex-shrink:0;}
+.step-circle{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0;}
+.step-circle.done{background:var(--green);color:#fff;}
+.step-circle.active{background:var(--blue);color:#fff;}
+.step-circle.todo{background:var(--gray-light);color:var(--gray);}
+.step-label{font-size:12px;margin-left:6px;color:var(--gray);white-space:nowrap;}
+.step-line{height:2px;width:32px;background:var(--border);margin:0 8px;flex-shrink:0;}
+.step-line.done{background:var(--green);}
+
+/* BUTTONS */
+.btn-primary{background:var(--blue);color:#fff;border-radius:9px;padding:11px 24px;font-size:14px;font-weight:500;transition:background 0.15s;border:none;cursor:pointer;}
+.btn-primary:hover{background:#1251a3;}
+.btn-secondary{background:#fff;color:var(--blue);border:1px solid var(--blue);border-radius:9px;padding:10px 20px;font-size:14px;cursor:pointer;transition:all 0.15s;}
+.btn-secondary:hover{background:var(--blue-light);}
+.btn-danger{background:var(--red);color:#fff;border-radius:9px;padding:9px 18px;font-size:13px;border:none;cursor:pointer;}
+.btn-success{background:var(--green);color:#fff;border-radius:9px;padding:9px 18px;font-size:13px;border:none;cursor:pointer;}
+.btn-row{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;font-size:13px;}
+.tbl th{text-align:left;padding:10px 14px;font-size:12px;font-weight:600;color:var(--gray);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid var(--border);background:var(--gray-light);}
+.tbl td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle;}
+.tbl tr:hover td{background:#fafbfd;}
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
+
+/* TIMELINE */
+.timeline{padding-left:18px;border-left:2px solid var(--border);}
+.tl-item{position:relative;padding-bottom:20px;padding-left:18px;}
+.tl-dot{position:absolute;left:-26px;top:3px;width:12px;height:12px;border-radius:50%;}
+.tl-dot.blue{background:var(--blue);}
+.tl-dot.green{background:var(--green);}
+.tl-dot.amber{background:#f59e0b;}
+.tl-dot.red{background:var(--red);}
+.tl-dot.gray{background:var(--gray);}
+.tl-time{font-size:11px;color:var(--gray);}
+.tl-msg{font-size:13px;color:#1a1a2e;margin-top:2px;}
+
+/* OFFICER SPECIFIC */
+.review-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap;}
+.review-info{flex:1;}
+.review-actions{display:flex;gap:10px;flex-wrap:wrap;}
+.score-bar{height:10px;border-radius:5px;background:var(--border);overflow:hidden;margin-top:8px;}
+.score-fill{height:100%;border-radius:5px;transition:width 0.5s;}
+.score-fill.high{background:var(--green);}
+.score-fill.mid{background:#f59e0b;}
+.score-fill.low{background:var(--red);}
+.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+.detail-item{padding:12px;background:var(--gray-light);border-radius:9px;}
+.detail-label{font-size:11px;color:var(--gray);margin-bottom:3px;}
+.detail-value{font-size:14px;font-weight:500;color:#1a1a2e;}
+
+/* TOAST */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;}
+.toast{background:#1a1a2e;color:#fff;border-radius:10px;padding:12px 18px;font-size:13px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 30px rgba(0,0,0,0.2);animation:slideIn 0.25s ease;}
+.toast.success{background:#1b7a45;}.toast.error{background:var(--red);}
+@keyframes slideIn{from{transform:translateX(50px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.toast i{font-size:16px;}
+
+/* SUCCESS SCREEN */
+.success-screen{text-align:center;padding:48px 24px;}
+.success-icon{width:72px;height:72px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;}
+.success-icon i{font-size:36px;color:var(--green);}
+.success-title{font-size:22px;font-weight:700;margin-bottom:8px;}
+.success-ref{background:var(--gray-light);border-radius:8px;padding:10px 18px;display:inline-block;font-family:monospace;font-size:16px;color:var(--blue);margin:12px 0;}
+
+.range-wrap{display:flex;align-items:center;gap:12px;}
+.range-wrap input[type=range]{flex:1;}
+.range-val{font-size:14px;font-weight:500;color:var(--blue);min-width:80px;text-align:right;}
+
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.chip{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;background:var(--gray-light);color:#1a1a2e;cursor:pointer;border:1px solid var(--border);transition:all 0.15s;}
+.chip.selected{background:var(--blue);color:#fff;border-color:var(--blue);}
+
+.officer-badge{background:#0d1b3e;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:.5px;}
+
+.notif-dot{width:8px;height:8px;background:var(--red);border-radius:50%;display:inline-block;margin-left:4px;}
+.search-bar{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.search-bar input{flex:1;max-width:300px;}
+.filter-chips{display:flex;gap:8px;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toasts"></div>
+
+<!-- CAMERA MODAL -->
+<div class="modal-overlay" id="cam-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title"><i class="ti ti-camera"></i> Capture Document</span>
+      <button class="modal-close" onclick="closeCamera()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <video id="cam-video" autoplay playsinline></video>
+      <canvas id="cam-canvas" style="display:none;"></canvas>
+      <div class="cam-controls">
+        <button class="btn-capture" onclick="capturePhoto()"><i class="ti ti-camera"></i> Capture</button>
+        <button class="btn-cancel-cam" onclick="closeCamera()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ROLE SELECTION SCREEN -->
+<div id="role-screen">
+  <div class="role-card">
+    <div class="role-logo">NexaBank</div>
+    <div class="role-tagline">Fast. Transparent. Trusted loan services.</div>
+    <p style="font-size:15px;color:#4a5568;margin-bottom:28px;">Who are you logging in as?</p>
+    <div class="role-btns">
+      <button class="role-btn" onclick="enterAs('public')">
+        <i class="ti ti-user-circle"></i>
+        <div class="rb-title">Applicant</div>
+        <div class="rb-desc">Apply for a loan &amp; track your application</div>
+      </button>
+      <button class="role-btn" onclick="enterAs('officer')">
+        <i class="ti ti-briefcase"></i>
+        <div class="rb-title">Bank Officer</div>
+        <div class="rb-desc">Review &amp; manage loan applications</div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PUBLIC USER APP -->
+<div id="public-app" style="display:none;">
+  <nav>
+    <div class="nav-logo">NexaBank</div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <span style="font-size:13px;color:var(--gray);cursor:pointer;" onclick="goPublicPage('dashboard-public')"><i class="ti ti-layout-dashboard"></i> My Applications</span>
+      <div class="nav-user">
+        <div class="nav-avatar">AK</div>
+        <span style="font-size:13px;font-weight:500;">Ahmad Kamal</span>
+      </div>
+      <button class="nav-back" onclick="backToRole()"><i class="ti ti-logout"></i> Sign out</button>
+    </div>
+  </nav>
+  <div class="app-shell">
+    <div class="sidebar">
+      <div class="sidebar-section">Menu</div>
+      <div class="sidebar-item active" onclick="goPublicPage('dashboard-public')" id="pub-nav-dashboard"><i class="ti ti-layout-dashboard"></i> My Dashboard</div>
+      <div class="sidebar-item" onclick="goPublicPage('apply-public')" id="pub-nav-apply"><i class="ti ti-forms"></i> New Application</div>
+      <div class="sidebar-item" onclick="goPublicPage('track-public')" id="pub-nav-track"><i class="ti ti-map-pin"></i> Track Status</div>
+      <div class="sidebar-section">Support</div>
+      <div class="sidebar-item"><i class="ti ti-help-circle"></i> FAQ</div>
+      <div class="sidebar-item"><i class="ti ti-message"></i> Contact Us</div>
+    </div>
+    <div class="main-content">
+      <!-- PUBLIC DASHBOARD -->
+      <div class="page active" id="page-dashboard-public">
+        <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">Welcome back, Ahmad 👋</h2>
+        <p style="color:var(--gray);font-size:14px;margin-bottom:24px;">Here's an overview of your loan applications.</p>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-num">2</div><div class="stat-lbl">Active Applications</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:var(--green);">1</div><div class="stat-lbl">Approved</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:var(--amber);">1</div><div class="stat-lbl">Under Review</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:var(--blue);">RM 0</div><div class="stat-lbl">Total Disbursed</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Your Applications</div>
+          <div class="tbl-wrap">
+            <table class="tbl">
+              <thead><tr><th>Ref No.</th><th>Loan Type</th><th>Amount</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td style="font-family:monospace;font-weight:500;">NB-2024-0091</td>
+                  <td>🏠 Home Loan</td>
+                  <td style="font-weight:600;">RM 250,000</td>
+                  <td style="color:var(--gray);">12 Jun 2024</td>
+                  <td><span class="badge badge-review">Under Review</span></td>
+                  <td><button class="btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="viewMyApp('NB-2024-0091')">Track</button></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-weight:500;">NB-2024-0054</td>
+                  <td>💼 Personal Loan</td>
+                  <td style="font-weight:600;">RM 30,000</td>
+                  <td style="color:var(--gray);">3 Apr 2024</td>
+                  <td><span class="badge badge-approved">Approved</span></td>
+                  <td><button class="btn-secondary" style="padding:5px 12px;font-size:12px;" onclick="viewMyApp('NB-2024-0054')">View</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:16px;">
+            <button class="btn-primary" onclick="goPublicPage('apply-public')"><i class="ti ti-plus"></i> Apply for New Loan</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Recent Activity</div>
+          <div class="timeline">
+            <div class="tl-item"><div class="tl-dot blue"></div><div class="tl-time">Today, 9:41 AM</div><div class="tl-msg">Your home loan application is being reviewed by a senior officer.</div></div>
+            <div class="tl-item"><div class="tl-dot green"></div><div class="tl-time">5 Jun 2024</div><div class="tl-msg">Documents verified for NB-2024-0091.</div></div>
+            <div class="tl-item"><div class="tl-dot amber"></div><div class="tl-time">3 Apr 2024</div><div class="tl-msg">Personal loan NB-2024-0054 approved. Funds disbursed.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPLY PAGE -->
+      <div class="page" id="page-apply-public">
+        <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">New Loan Application</h2>
+        <p style="color:var(--gray);font-size:14px;margin-bottom:24px;">Complete all sections to submit your application.</p>
+
+        <!-- STEP INDICATOR -->
+        <div class="steps" id="apply-steps">
+          <div class="step"><div class="step-circle active" id="sc1">1</div><span class="step-label">Loan Type</span></div>
+          <div class="step-line" id="sl1"></div>
+          <div class="step"><div class="step-circle todo" id="sc2">2</div><span class="step-label">Personal Info</span></div>
+          <div class="step-line" id="sl2"></div>
+          <div class="step"><div class="step-circle todo" id="sc3">3</div><span class="step-label">Documents</span></div>
+          <div class="step-line" id="sl3"></div>
+          <div class="step"><div class="step-circle todo" id="sc4">4</div><span class="step-label">Review</span></div>
+        </div>
+
+        <!-- STEP 1: LOAN TYPE -->
+        <div id="apply-step1" class="card">
+          <div class="card-title">Choose Loan Type</div>
+          <div class="loan-types">
+            <div class="loan-type-btn" onclick="selectLoanType(this,'personal')"><i class="ti ti-wallet"></i><div class="lt-name">Personal</div><div class="lt-sub">Up to RM 100K</div></div>
+            <div class="loan-type-btn" onclick="selectLoanType(this,'auto')"><i class="ti ti-car"></i><div class="lt-name">Auto</div><div class="lt-sub">New &amp; Used Cars</div></div>
+            <div class="loan-type-btn" onclick="selectLoanType(this,'home')"><i class="ti ti-home"></i><div class="lt-name">Home</div><div class="lt-sub">Up to RM 2M</div></div>
+            <div class="loan-type-btn" onclick="selectLoanType(this,'business')"><i class="ti ti-building-store"></i><div class="lt-name">Business</div><div class="lt-sub">For SMEs &amp; MSMEs</div></div>
+          </div>
+          <div id="loan-amount-section" style="display:none;">
+            <div class="form-group">
+              <label class="lbl">Loan Amount (RM)</label>
+              <div class="range-wrap">
+                <input type="range" id="loan-amount-range" min="5000" max="500000" step="5000" value="50000" oninput="updateLoanAmt()"/>
+                <span class="range-val" id="loan-amt-display">RM 50,000</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="lbl">Tenure</label>
+              <div class="chip-row">
+                <div class="chip" onclick="selectTenure(this,'1')">1 Year</div>
+                <div class="chip selected" onclick="selectTenure(this,'3')">3 Years</div>
+                <div class="chip" onclick="selectTenure(this,'5')">5 Years</div>
+                <div class="chip" onclick="selectTenure(this,'10')">10 Years</div>
+                <div class="chip" onclick="selectTenure(this,'20')">20 Years</div>
+                <div class="chip" onclick="selectTenure(this,'30')">30 Years</div>
+              </div>
+            </div>
+            <div style="background:var(--blue-light);border-radius:10px;padding:16px;font-size:13px;color:var(--blue);margin-bottom:8px;">
+              <strong>Estimated Monthly Payment:</strong> <span id="monthly-est" style="font-size:16px;font-weight:700;">RM 1,441</span> · <span style="color:var(--gray);">Interest rate: 3.88% p.a.</span>
+            </div>
+            <button class="btn-primary" onclick="applyStep(2)">Continue <i class="ti ti-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 2: PERSONAL INFO -->
+        <div id="apply-step2" class="card" style="display:none;">
+          <div class="card-title">Personal Information</div>
+          <div class="form-row">
+            <div class="form-group"><label class="lbl">Full Name (as per IC)</label><input type="text" placeholder="e.g. Ahmad Bin Kamal" value="Ahmad Bin Kamal"/></div>
+            <div class="form-group"><label class="lbl">IC / MyKad Number</label><input type="text" placeholder="e.g. 900101-14-5678" value="900101-14-5678"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="lbl">Email Address</label><input type="email" placeholder="you@email.com" value="ahmad.kamal@email.com"/></div>
+            <div class="form-group"><label class="lbl">Phone Number</label><input type="text" placeholder="+60 12-345 6789" value="+60 12-345 6789"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="lbl">Employment Status</label>
+              <select>
+                <option>Employed (Full-time)</option><option>Self-Employed</option><option>Contract</option><option>Retired</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="lbl">Monthly Gross Income (RM)</label><input type="number" placeholder="e.g. 8000" value="8500"/></div>
+          </div>
+          <div class="form-group"><label class="lbl">Residential Address</label><input type="text" placeholder="Street address" value="12, Jalan Damai 3, Taman Damai"/></div>
+          <div class="form-row">
+            <div class="form-group"><label class="lbl">Postcode</label><input type="text" value="43000"/></div>
+            <div class="form-group"><label class="lbl">City</label><input type="text" value="Kajang, Selangor"/></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-secondary" onclick="applyStep(1)"><i class="ti ti-arrow-left"></i> Back</button>
+            <button class="btn-primary" onclick="applyStep(3)">Continue <i class="ti ti-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 3: DOCUMENTS -->
+        <div id="apply-step3" class="card" style="display:none;">
+          <div class="card-title">Upload Required Documents</div>
+          <p style="font-size:13px;color:var(--gray);margin-bottom:16px;">Drag &amp; drop files below, or click to browse. You can also use your camera to capture documents directly.</p>
+          <div class="upload-docs">
+            <div class="doc-slot">
+              <div class="doc-slot-header"><i class="ti ti-id-badge-2"></i> Identity Document (IC/Passport)</div>
+              <div class="upload-zone" id="drop-id" ondragover="evt.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleDrop(event,'id')">
+                <input type="file" accept="image/*,.pdf" onchange="handleFile(event,'id')"/>
+                <i class="ti ti-upload"></i>
+                <div class="uz-title">Drop file or click to browse</div>
+                <div class="uz-sub">JPG, PNG or PDF · Max 5MB</div>
+              </div>
+              <div style="padding:8px 14px;"><button class="cam-btn" onclick="openCamera('id')"><i class="ti ti-camera"></i> Use Camera</button></div>
+              <div class="uploaded-preview" id="preview-id" style="display:none;"><i class="ti ti-circle-check"></i> <span id="preview-id-name">Document captured</span></div>
+            </div>
+            <div class="doc-slot">
+              <div class="doc-slot-header"><i class="ti ti-file-invoice"></i> Proof of Income (Payslip/EPF)</div>
+              <div class="upload-zone" id="drop-income">
+                <input type="file" accept="image/*,.pdf" onchange="handleFile(event,'income')"/>
+                <i class="ti ti-upload"></i>
+                <div class="uz-title">Drop file or click to browse</div>
+                <div class="uz-sub">JPG, PNG or PDF · Max 5MB</div>
+              </div>
+              <div style="padding:8px 14px;"><button class="cam-btn" onclick="openCamera('income')"><i class="ti ti-camera"></i> Use Camera</button></div>
+              <div class="uploaded-preview" id="preview-income" style="display:none;"><i class="ti ti-circle-check"></i> <span id="preview-income-name">Document captured</span></div>
+            </div>
+            <div class="doc-slot">
+              <div class="doc-slot-header"><i class="ti ti-report-money"></i> Bank Statement (3 months)</div>
+              <div class="upload-zone" id="drop-bank">
+                <input type="file" accept="image/*,.pdf" onchange="handleFile(event,'bank')"/>
+                <i class="ti ti-upload"></i>
+                <div class="uz-title">Drop file or click to browse</div>
+                <div class="uz-sub">JPG, PNG or PDF · Max 5MB</div>
+              </div>
+              <div style="padding:8px 14px;"><button class="cam-btn" onclick="openCamera('bank')"><i class="ti ti-camera"></i> Use Camera</button></div>
+              <div class="uploaded-preview" id="preview-bank" style="display:none;"><i class="ti ti-circle-check"></i> <span id="preview-bank-name">Document captured</span></div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-secondary" onclick="applyStep(2)"><i class="ti ti-arrow-left"></i> Back</button>
+            <button class="btn-primary" onclick="applyStep(4)">Review Application <i class="ti ti-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 4: REVIEW & SUBMIT -->
+        <div id="apply-step4" class="card" style="display:none;">
+          <div class="card-title">Review & Submit</div>
+          <div class="detail-grid" style="margin-bottom:20px;">
+            <div class="detail-item"><div class="detail-label">Loan Type</div><div class="detail-value" id="rev-type">Home Loan</div></div>
+            <div class="detail-item"><div class="detail-label">Amount</div><div class="detail-value" id="rev-amount">RM 50,000</div></div>
+            <div class="detail-item"><div class="detail-label">Tenure</div><div class="detail-value" id="rev-tenure">3 Years</div></div>
+            <div class="detail-item"><div class="detail-label">Monthly Est.</div><div class="detail-value" id="rev-monthly">RM 1,441</div></div>
+            <div class="detail-item"><div class="detail-label">Applicant</div><div class="detail-value">Ahmad Bin Kamal</div></div>
+            <div class="detail-item"><div class="detail-label">Income (Monthly)</div><div class="detail-value">RM 8,500</div></div>
+          </div>
+          <div class="detail-item" style="margin-bottom:16px;">
+            <div class="detail-label">Documents</div>
+            <div id="rev-docs" style="margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;">
+              <span class="badge badge-doc"><i class="ti ti-id-badge-2"></i> IC</span>
+              <span class="badge badge-doc"><i class="ti ti-file-invoice"></i> Payslip</span>
+              <span class="badge badge-doc"><i class="ti ti-report-money"></i> Bank Statement</span>
+            </div>
+          </div>
+          <div style="background:var(--amber-light);border-radius:10px;padding:14px;font-size:13px;color:var(--amber);margin-bottom:18px;"><i class="ti ti-info-circle"></i> By submitting, you confirm all information is accurate and consent to NexaBank processing your personal data for this application.</div>
+          <div class="btn-row">
+            <button class="btn-secondary" onclick="applyStep(3)"><i class="ti ti-arrow-left"></i> Back</button>
+            <button class="btn-primary" onclick="submitApplication()" style="background:var(--green);">Submit Application <i class="ti ti-send"></i></button>
+          </div>
+        </div>
+
+        <!-- SUCCESS -->
+        <div id="apply-success" class="card" style="display:none;">
+          <div class="success-screen">
+            <div class="success-icon"><i class="ti ti-circle-check"></i></div>
+            <div class="success-title">Application Submitted!</div>
+            <p style="color:var(--gray);font-size:14px;margin-bottom:12px;">Your loan application has been received. We'll review it within 3–5 business days.</p>
+            <div class="success-ref" id="app-ref-num">NB-2024-0099</div>
+            <p style="font-size:13px;color:var(--gray);margin-bottom:24px;">Save this reference number to track your application.</p>
+            <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+              <button class="btn-primary" onclick="goPublicPage('dashboard-public')"><i class="ti ti-layout-dashboard"></i> Back to Dashboard</button>
+              <button class="btn-secondary" onclick="goPublicPage('track-public')"><i class="ti ti-map-pin"></i> Track Status</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRACK STATUS PAGE -->
+      <div class="page" id="page-track-public">
+        <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">Track Application</h2>
+        <p style="color:var(--gray);font-size:14px;margin-bottom:20px;">Enter your reference number to check the status of your application.</p>
+        <div class="card">
+          <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+            <input type="text" id="track-ref-input" placeholder="Enter reference no. e.g. NB-2024-0091" style="flex:1;min-width:200px;" value="NB-2024-0091"/>
+            <button class="btn-primary" onclick="trackApp()">Track</button>
+          </div>
+          <div id="track-result" style="display:none;">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
+              <div>
+                <div style="font-family:monospace;font-size:17px;font-weight:700;color:var(--blue);">NB-2024-0091</div>
+                <div style="font-size:13px;color:var(--gray);">🏠 Home Loan · RM 250,000 · Submitted 12 Jun 2024</div>
+              </div>
+              <span class="badge badge-review" style="font-size:13px;padding:6px 14px;"><i class="ti ti-clock"></i> Under Review</span>
+            </div>
+            <div style="display:flex;gap:0;margin-bottom:24px;">
+              <div style="flex:1;text-align:center;">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="ti ti-check" style="font-size:16px;"></i></div>
+                <div style="font-size:11px;color:var(--green);font-weight:500;">Submitted</div>
+              </div>
+              <div style="flex:0.4;display:flex;align-items:center;padding-bottom:18px;"><div style="height:2px;width:100%;background:var(--green);"></div></div>
+              <div style="flex:1;text-align:center;">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="ti ti-check" style="font-size:16px;"></i></div>
+                <div style="font-size:11px;color:var(--green);font-weight:500;">Docs Verified</div>
+              </div>
+              <div style="flex:0.4;display:flex;align-items:center;padding-bottom:18px;"><div style="height:2px;width:100%;background:var(--blue);"></div></div>
+              <div style="flex:1;text-align:center;">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="ti ti-user-check" style="font-size:16px;"></i></div>
+                <div style="font-size:11px;color:var(--blue);font-weight:500;">Under Review</div>
+              </div>
+              <div style="flex:0.4;display:flex;align-items:center;padding-bottom:18px;"><div style="height:2px;width:100%;background:var(--border);"></div></div>
+              <div style="flex:1;text-align:center;">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--border);color:var(--gray);display:flex;align-items:center;justify-content:center;margin:0 auto 6px;"><i class="ti ti-circle-check" style="font-size:16px;"></i></div>
+                <div style="font-size:11px;color:var(--gray);">Decision</div>
+              </div>
+            </div>
+            <div style="background:var(--blue-light);border-radius:10px;padding:14px;font-size:13px;color:var(--blue);"><i class="ti ti-info-circle"></i> Your application is currently being reviewed by our loan officer. Expected decision: within 2 business days.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BANK OFFICER APP -->
+<div id="officer-app" style="display:none;">
+  <nav style="background:#0d1b3e;border-bottom:1px solid #1e3560;">
+    <div class="nav-logo" style="color:#fff;">NexaBank <span class="officer-badge">OFFICER</span></div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <span style="font-size:13px;color:#94aacf;"><i class="ti ti-bell" style="font-size:16px;"></i> <span class="notif-dot"></span></span>
+      <div class="nav-user">
+        <div class="nav-avatar" style="background:#2979d0;">SR</div>
+        <span style="color:#fff;font-size:13px;font-weight:500;">Siti Rahmah</span>
+      </div>
+      <button class="nav-back" style="color:#94aacf;" onclick="backToRole()"><i class="ti ti-logout"></i> Sign out</button>
+    </div>
+  </nav>
+  <div class="app-shell">
+    <div class="sidebar" style="background:#0d1b3e;border-right:1px solid #1e3560;">
+      <div class="sidebar-section" style="color:#4a6080;">Navigation</div>
+      <div class="sidebar-item" id="off-nav-dashboard" onclick="goOfficerPage('dashboard-officer')" style="color:#94aacf;"><i class="ti ti-chart-bar"></i> Dashboard</div>
+      <div class="sidebar-item active" id="off-nav-queue" onclick="goOfficerPage('queue-officer')" style="color:#94aacf;"><i class="ti ti-list-check"></i> Review Queue <span style="background:#c0392b;color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;margin-left:4px;">5</span></div>
+      <div class="sidebar-item" id="off-nav-all" onclick="goOfficerPage('all-officer')" style="color:#94aacf;"><i class="ti ti-files"></i> All Applications</div>
+      <div class="sidebar-section" style="color:#4a6080;margin-top:8px;">Tools</div>
+      <div class="sidebar-item" style="color:#94aacf;"><i class="ti ti-chart-area"></i> Reports</div>
+      <div class="sidebar-item" style="color:#94aacf;"><i class="ti ti-settings"></i> Settings</div>
+    </div>
+    <div class="main-content">
+      <!-- OFFICER DASHBOARD -->
+      <div class="page" id="page-dashboard-officer">
+        <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">Operations Dashboard</h2>
+        <p style="color:var(--gray);font-size:14px;margin-bottom:24px;">June 2024 overview · Siti Rahmah, Loan Officer</p>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-num">47</div><div class="stat-lbl">Total This Month</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:var(--amber);">5</div><div class="stat-lbl">Pending Review</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:var(--green);">28</div><div class="stat-lbl">Approved</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:var(--red);">6</div><div class="stat-lbl">Rejected</div></div>
+          <div class="stat-card"><div class="stat-num" style="color:var(--blue);">RM 4.2M</div><div class="stat-lbl">Approved Volume</div></div>
+          <div class="stat-card"><div class="stat-num">2.1d</div><div class="stat-lbl">Avg. Processing Time</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;flex-wrap:wrap;">
+          <div class="card" style="min-width:240px;">
+            <div class="card-title">Loan Mix (This Month)</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Home Loan</span><span style="font-weight:600;">18</span></div><div class="score-bar"><div class="score-fill high" style="width:38%"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Personal</span><span style="font-weight:600;">14</span></div><div class="score-bar"><div class="score-fill mid" style="width:30%;background:var(--blue-mid);"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Auto</span><span style="font-weight:600;">10</span></div><div class="score-bar"><div class="score-fill mid" style="width:21%;"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Business</span><span style="font-weight:600;">5</span></div><div class="score-bar"><div class="score-fill low" style="width:11%;background:#9b59b6;"></div></div></div>
+            </div>
+          </div>
+          <div class="card" style="min-width:240px;">
+            <div class="card-title">Recent Decisions</div>
+            <div class="timeline">
+              <div class="tl-item"><div class="tl-dot green"></div><div class="tl-time">Today, 11:02 AM</div><div class="tl-msg">Approved NB-2024-0095 (Personal, RM 25K)</div></div>
+              <div class="tl-item"><div class="tl-dot red"></div><div class="tl-time">Today, 9:15 AM</div><div class="tl-msg">Rejected NB-2024-0093 (insufficient income)</div></div>
+              <div class="tl-item"><div class="tl-dot blue"></div><div class="tl-time">Yesterday</div><div class="tl-msg">Approved NB-2024-0088 (Home, RM 380K)</div></div>
+              <div class="tl-item"><div class="tl-dot amber"></div><div class="tl-time">Yesterday</div><div class="tl-msg">Requested more docs from NB-2024-0086</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REVIEW QUEUE -->
+      <div class="page active" id="page-queue-officer">
+        <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">Review Queue</h2>
+        <p style="color:var(--gray);font-size:14px;margin-bottom:20px;">Applications awaiting your review, sorted by submission date.</p>
+        <div class="search-bar">
+          <input type="text" placeholder="Search by name or reference..." style="max-width:280px;"/>
+          <div class="filter-chips">
+            <div class="chip selected" onclick="filterType(this,'all')">All</div>
+            <div class="chip" onclick="filterType(this,'home')">Home</div>
+            <div class="chip" onclick="filterType(this,'personal')">Personal</div>
+            <div class="chip" onclick="filterType(this,'auto')">Auto</div>
+            <div class="chip" onclick="filterType(this,'business')">Business</div>
+          </div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div class="tbl-wrap" style="border:none;border-radius:0;">
+            <table class="tbl">
+              <thead><tr><th>Ref No.</th><th>Applicant</th><th>Type</th><th>Amount</th><th>Submitted</th><th>Risk</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td style="font-family:monospace;font-weight:500;color:var(--blue);">NB-2024-0097</td>
+                  <td><div style="font-weight:500;">Lim Wei Jie</div><div style="font-size:11px;color:var(--gray);">RM 7,200/mo income</div></td>
+                  <td>🏠 Home</td><td style="font-weight:600;">RM 420,000</td>
+                  <td style="font-size:12px;color:var(--gray);">Today, 8:30 AM</td>
+                  <td><div style="display:flex;align-items:center;gap:6px;"><div class="score-bar" style="width:60px;height:6px;"><div class="score-fill mid" style="width:62%;"></div></div><span style="font-size:12px;">Medium</span></div></td>
+                  <td><span class="badge badge-pending">Pending</span></td>
+                  <td><button class="btn-primary" style="padding:6px 14px;font-size:12px;" onclick="reviewApp('NB-2024-0097')">Review</button></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-weight:500;color:var(--blue);">NB-2024-0096</td>
+                  <td><div style="font-weight:500;">Priya Murugam</div><div style="font-size:11px;color:var(--gray);">RM 5,800/mo income</div></td>
+                  <td>💼 Personal</td><td style="font-weight:600;">RM 45,000</td>
+                  <td style="font-size:12px;color:var(--gray);">Yesterday, 4:22 PM</td>
+                  <td><div style="display:flex;align-items:center;gap:6px;"><div class="score-bar" style="width:60px;height:6px;"><div class="score-fill high" style="width:80%;"></div></div><span style="font-size:12px;">Low</span></div></td>
+                  <td><span class="badge badge-pending">Pending</span></td>
+                  <td><button class="btn-primary" style="padding:6px 14px;font-size:12px;" onclick="reviewApp('NB-2024-0096')">Review</button></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-weight:500;color:var(--blue);">NB-2024-0094</td>
+                  <td><div style="font-weight:500;">Tan Ah Kow</div><div style="font-size:11px;color:var(--gray);">RM 3,200/mo income</div></td>
+                  <td>🚗 Auto</td><td style="font-weight:600;">RM 88,000</td>
+                  <td style="font-size:12px;color:var(--gray);">20 Jun 2024</td>
+                  <td><div style="display:flex;align-items:center;gap:6px;"><div class="score-bar" style="width:60px;height:6px;"><div class="score-fill low" style="width:35%;"></div></div><span style="font-size:12px;color:var(--red);">High</span></div></td>
+                  <td><span class="badge badge-pending">Pending</span></td>
+                  <td><button class="btn-primary" style="padding:6px 14px;font-size:12px;" onclick="reviewApp('NB-2024-0094')">Review</button></td>
+                </tr>
+                <tr>
+                  <td style="font-family:monospace;font-weight:500;color:var(--blue);">NB-2024-0091</td>
+                  <td><div style="font-weight:500;">Ahmad Kamal</div><div style="font-size:11px;color:var(--gray);">RM 8,500/mo income</div></td>
+                  <td>🏠 Home</td><td style="font-weight:600;">RM 250,000</td>
+                  <td style="font-size:12px;color:var(--gray);">12 Jun 2024</td>
+                  <td><div style="display:flex;align-items:center;gap:6px;"><div class="score-bar" style="width:60px;height:6px;"><div class="score-fill high" style="width:75%;"></div></div><span style="font-size:12px;">Low</span></div></td>
+                  <td><span class="badge badge-review">In Review</span></td>
+                  <td><button class="btn-primary" style="padding:6px 14px;font-size:12px;" onclick="reviewApp('NB-2024-0091')">Review</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALL APPLICATIONS -->
+      <div class="page" id="page-all-officer">
+        <h2 style="font-size:20px;font-weight:700;margin-bottom:6px;">All Applications</h2>
+        <p style="color:var(--gray);font-size:14px;margin-bottom:20px;">Complete application history — June 2024</p>
+        <div class="card" style="padding:0;overflow:hidden;">
+          <div class="tbl-wrap" style="border:none;border-radius:0;">
+            <table class="tbl">
+              <thead><tr><th>Ref No.</th><th>Applicant</th><th>Type</th><th>Amount</th><th>Submitted</th><th>Status</th><th>Officer</th></tr></thead>
+              <tbody>
+                <tr><td style="font-family:monospace;">NB-2024-0097</td><td>Lim Wei Jie</td><td>Home</td><td>RM 420,000</td><td style="color:var(--gray);font-size:12px;">22 Jun 2024</td><td><span class="badge badge-pending">Pending</span></td><td style="color:var(--gray);font-size:12px;">Siti Rahmah</td></tr>
+                <tr><td style="font-family:monospace;">NB-2024-0096</td><td>Priya Murugam</td><td>Personal</td><td>RM 45,000</td><td style="color:var(--gray);font-size:12px;">21 Jun 2024</td><td><span class="badge badge-pending">Pending</span></td><td style="color:var(--gray);font-size:12px;">Siti Rahmah</td></tr>
+                <tr><td style="font-family:monospace;">NB-2024-0095</td><td>Zul Ariff</td><td>Personal</td><td>RM 25,000</td><td style="color:var(--gray);font-size:12px;">21 Jun 2024</td><td><span class="badge badge-approved">Approved</span></td><td style="color:var(--gray);font-size:12px;">Siti Rahmah</td></tr>
+                <tr><td style="font-family:monospace;">NB-2024-0094</td><td>Tan Ah Kow</td><td>Auto</td><td>RM 88,000</td><td style="color:var(--gray);font-size:12px;">20 Jun 2024</td><td><span class="badge badge-pending">Pending</span></td><td style="color:var(--gray);font-size:12px;">Azman Razak</td></tr>
+                <tr><td style="font-family:monospace;">NB-2024-0093</td><td>Farah Hani</td><td>Business</td><td>RM 150,000</td><td style="color:var(--gray);font-size:12px;">19 Jun 2024</td><td><span class="badge badge-rejected">Rejected</span></td><td style="color:var(--gray);font-size:12px;">Siti Rahmah</td></tr>
+                <tr><td style="font-family:monospace;">NB-2024-0091</td><td>Ahmad Kamal</td><td>Home</td><td>RM 250,000</td><td style="color:var(--gray);font-size:12px;">12 Jun 2024</td><td><span class="badge badge-review">In Review</span></td><td style="color:var(--gray);font-size:12px;">Siti Rahmah</td></tr>
+                <tr><td style="font-family:monospace;">NB-2024-0088</td><td>Mohamad Khairul</td><td>Home</td><td>RM 380,000</td><td style="color:var(--gray);font-size:12px;">10 Jun 2024</td><td><span class="badge badge-approved">Approved</span></td><td style="color:var(--gray);font-size:12px;">Azman Razak</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- APPLICATION DETAIL (OFFICER) -->
+      <div class="page" id="page-review-detail">
+        <button class="btn-secondary" style="margin-bottom:20px;" onclick="goOfficerPage('queue-officer')"><i class="ti ti-arrow-left"></i> Back to Queue</button>
+        <div class="card">
+          <div class="review-header">
+            <div class="review-info">
+              <div style="font-family:monospace;font-size:17px;font-weight:700;color:var(--blue);" id="detail-ref">NB-2024-0091</div>
+              <div style="font-size:13px;color:var(--gray);margin-top:2px;" id="detail-meta">🏠 Home Loan · RM 250,000 · Submitted 12 Jun 2024</div>
+            </div>
+            <div class="review-actions">
+              <button class="btn-success" onclick="makeDecision('approve')"><i class="ti ti-circle-check"></i> Approve</button>
+              <button class="btn-secondary" onclick="makeDecision('request')"><i class="ti ti-file-plus"></i> Request Docs</button>
+              <button class="btn-danger" onclick="makeDecision('reject')"><i class="ti ti-circle-x"></i> Reject</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex-wrap:wrap;">
+            <div>
+              <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Applicant Details</div>
+              <div class="detail-grid">
+                <div class="detail-item"><div class="detail-label">Name</div><div class="detail-value" id="d-name">Ahmad Bin Kamal</div></div>
+                <div class="detail-item"><div class="detail-label">IC Number</div><div class="detail-value">900101-14-5678</div></div>
+                <div class="detail-item"><div class="detail-label">Employment</div><div class="detail-value">Full-time</div></div>
+                <div class="detail-item"><div class="detail-label">Monthly Income</div><div class="detail-value" id="d-income">RM 8,500</div></div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Credit Assessment</div>
+              <div class="detail-item" style="margin-bottom:10px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                  <div class="detail-label">Risk Score</div>
+                  <div style="font-size:16px;font-weight:700;color:var(--green);" id="d-score">74 / 100</div>
+                </div>
+                <div class="score-bar" style="height:12px;"><div class="score-fill high" id="d-score-bar" style="width:74%;"></div></div>
+              </div>
+              <div class="detail-grid">
+                <div class="detail-item"><div class="detail-label">DSR Ratio</div><div class="detail-value">32%</div></div>
+                <div class="detail-item"><div class="detail-label">Max Eligible</div><div class="detail-value">RM 280K</div></div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:20px;">
+            <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Documents Submitted</div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <div style="border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showToast('Opening document viewer...','')">
+                <i class="ti ti-id-badge-2" style="font-size:22px;color:var(--blue);"></i>
+                <div><div style="font-size:13px;font-weight:500;">Identity Card</div><div style="font-size:11px;color:var(--gray);">IC_AhmadKamal.pdf · 1.2MB</div></div>
+                <span class="badge badge-approved" style="margin-left:8px;"><i class="ti ti-check"></i> Verified</span>
+              </div>
+              <div style="border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showToast('Opening document viewer...','')">
+                <i class="ti ti-file-invoice" style="font-size:22px;color:var(--blue);"></i>
+                <div><div style="font-size:13px;font-weight:500;">Proof of Income</div><div style="font-size:11px;color:var(--gray);">Payslip_Jun2024.pdf · 0.8MB</div></div>
+                <span class="badge badge-approved" style="margin-left:8px;"><i class="ti ti-check"></i> Verified</span>
+              </div>
+              <div style="border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showToast('Opening document viewer...','')">
+                <i class="ti ti-report-money" style="font-size:22px;color:var(--blue);"></i>
+                <div><div style="font-size:13px;font-weight:500;">Bank Statement</div><div style="font-size:11px;color:var(--gray);">BankStmt_Q2.pdf · 2.1MB</div></div>
+                <span class="badge badge-review" style="margin-left:8px;"><i class="ti ti-clock"></i> Pending</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:20px;">
+            <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Officer Notes</div>
+            <textarea placeholder="Add internal notes here..." rows="3" style="font-size:13px;">Applicant has stable employment at Petronas (8 years). Income verified. DSR within acceptable range. Recommend approval pending bank statement review.</textarea>
+          </div>
+          <div style="margin-top:16px;">
+            <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Application Timeline</div>
+            <div class="timeline">
+              <div class="tl-item"><div class="tl-dot blue"></div><div class="tl-time">22 Jun 2024, 9:41 AM</div><div class="tl-msg">Application assigned to Siti Rahmah for review.</div></div>
+              <div class="tl-item"><div class="tl-dot green"></div><div class="tl-time">18 Jun 2024</div><div class="tl-msg">Documents verified by system. IC & payslip cleared.</div></div>
+              <div class="tl-item"><div class="tl-dot gray"></div><div class="tl-time">12 Jun 2024</div><div class="tl-msg">Application submitted by Ahmad Bin Kamal.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentRole='';
+let currentLoanType='';
+let currentStep=1;
+let currentTenure=3;
+let currentCamTarget='';
+let camStream=null;
+let uploadedDocs={id:false,income:false,bank:false};
+
+function enterAs(role){
+  currentRole=role;
+  document.getElementById('role-screen').style.display='none';
+  if(role==='public'){document.getElementById('public-app').style.display='block';}
+  else{
+    document.getElementById('officer-app').style.display='block';
+    goOfficerPage('queue-officer');
+  }
+}
+function backToRole(){
+  document.getElementById('role-screen').style.display='flex';
+  document.getElementById('public-app').style.display='none';
+  document.getElementById('officer-app').style.display='none';
+}
+
+/* PUBLIC NAVIGATION */
+function goPublicPage(page){
+  document.querySelectorAll('#public-app .page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#public-app .sidebar-item').forEach(i=>i.classList.remove('active'));
+  const el=document.getElementById('page-'+page);
+  if(el)el.classList.add('active');
+  if(page==='dashboard-public')document.getElementById('pub-nav-dashboard').classList.add('active');
+  if(page==='apply-public')document.getElementById('pub-nav-apply').classList.add('active');
+  if(page==='track-public')document.getElementById('pub-nav-track').classList.add('active');
+  if(page==='apply-public'){resetApplyForm();}
+}
+function resetApplyForm(){
+  currentStep=1;currentLoanType='';
+  document.querySelectorAll('.loan-type-btn').forEach(b=>b.classList.remove('selected'));
+  document.getElementById('loan-amount-section').style.display='none';
+  for(let s=1;s<=4;s++){
+    const el=document.getElementById('apply-step'+s);
+    if(el)el.style.display=s===1?'block':'none';
+  }
+  document.getElementById('apply-success').style.display='none';
+  updateStepUI();
+}
+
+/* OFFICER NAVIGATION */
+function goOfficerPage(page){
+  document.querySelectorAll('#officer-app .page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('#officer-app .sidebar-item').forEach(i=>i.classList.remove('active'));
+  const el=document.getElementById('page-'+page);
+  if(el)el.classList.add('active');
+  const navMap={'dashboard-officer':'off-nav-dashboard','queue-officer':'off-nav-queue','all-officer':'off-nav-all'};
+  if(navMap[page]){const nav=document.getElementById(navMap[page]);if(nav)nav.classList.add('active');}
+}
+
+/* LOAN TYPE */
+function selectLoanType(el,type){
+  document.querySelectorAll('.loan-type-btn').forEach(b=>b.classList.remove('selected'));
+  el.classList.add('selected');
+  currentLoanType=type;
+  document.getElementById('loan-amount-section').style.display='block';
+  const maxMap={personal:100000,auto:200000,home:500000,business:300000};
+  const rangeEl=document.getElementById('loan-amount-range');
+  rangeEl.max=maxMap[type];
+  rangeEl.value=Math.min(parseInt(rangeEl.value),maxMap[type]);
+  updateLoanAmt();
+}
+function updateLoanAmt(){
+  const v=parseInt(document.getElementById('loan-amount-range').value);
+  document.getElementById('loan-amt-display').textContent='RM '+v.toLocaleString();
+  const monthly=Math.round((v*(0.0388/12))/(1-Math.pow(1+0.0388/12,-(currentTenure*12))));
+  document.getElementById('monthly-est').textContent='RM '+monthly.toLocaleString();
+}
+function selectTenure(el,yr){
+  document.querySelectorAll('.chip-row .chip').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  currentTenure=parseInt(yr);
+  updateLoanAmt();
+}
+
+/* STEPS */
+function applyStep(n){
+  if(n===2&&!currentLoanType){showToast('Please select a loan type first','error');return;}
+  currentStep=n;
+  for(let s=1;s<=4;s++){
+    const el=document.getElementById('apply-step'+s);
+    if(el)el.style.display=s===n?'block':'none';
+  }
+  updateStepUI();
+  if(n===4)populateReview();
+}
+function updateStepUI(){
+  for(let s=1;s<=4;s++){
+    const circle=document.getElementById('sc'+s);
+    if(!circle)continue;
+    if(s<currentStep){circle.className='step-circle done';circle.innerHTML='<i class="ti ti-check" style="font-size:13px;"></i>';}
+    else if(s===currentStep){circle.className='step-circle active';circle.textContent=s;}
+    else{circle.className='step-circle todo';circle.textContent=s;}
+  }
+  for(let s=1;s<=3;s++){
+    const line=document.getElementById('sl'+s);
+    if(line){line.className=s<currentStep?'step-line done':'step-line';}
+  }
+}
+function populateReview(){
+  const typeNames={personal:'Personal Loan',auto:'Auto Loan',home:'Home Loan',business:'Business Loan'};
+  document.getElementById('rev-type').textContent=typeNames[currentLoanType]||'—';
+  const amt=parseInt(document.getElementById('loan-amount-range').value);
+  document.getElementById('rev-amount').textContent='RM '+amt.toLocaleString();
+  document.getElementById('rev-tenure').textContent=currentTenure+' Year'+((currentTenure>1)?'s':'');
+  document.getElementById('rev-monthly').textContent=document.getElementById('monthly-est').textContent;
+}
+function submitApplication(){
+  const refNum='NB-2024-00'+Math.floor(Math.random()*90+10);
+  document.getElementById('app-ref-num').textContent=refNum;
+  for(let s=1;s<=4;s++){const el=document.getElementById('apply-step'+s);if(el)el.style.display='none';}
+  document.getElementById('apply-success').style.display='block';
+  showToast('Application submitted successfully!','success');
+}
+
+/* TRACK */
+function trackApp(){
+  document.getElementById('track-result').style.display='block';
+  showToast('Application found','success');
+}
+
+/* OFFICER REVIEW */
+function reviewApp(ref){
+  goOfficerPage('review-detail');
+  const appData={
+    'NB-2024-0091':{name:'Ahmad Bin Kamal',meta:'🏠 Home Loan · RM 250,000 · Submitted 12 Jun 2024',income:'RM 8,500',score:74},
+    'NB-2024-0097':{name:'Lim Wei Jie',meta:'🏠 Home Loan · RM 420,000 · Submitted 22 Jun 2024',income:'RM 7,200',score:62},
+    'NB-2024-0096':{name:'Priya Murugam',meta:'💼 Personal Loan · RM 45,000 · Submitted 21 Jun 2024',income:'RM 5,800',score:81},
+    'NB-2024-0094':{name:'Tan Ah Kow',meta:'🚗 Auto Loan · RM 88,000 · Submitted 20 Jun 2024',income:'RM 3,200',score:38},
+  };
+  const d=appData[ref]||appData['NB-2024-0091'];
+  document.getElementById('detail-ref').textContent=ref;
+  document.getElementById('detail-meta').textContent=d.meta;
+  document.getElementById('d-name').textContent=d.name;
+  document.getElementById('d-income').textContent=d.income;
+  document.getElementById('d-score').textContent=d.score+' / 100';
+  const bar=document.getElementById('d-score-bar');
+  bar.style.width=d.score+'%';
+  bar.className='score-fill '+(d.score>=65?'high':d.score>=45?'mid':'low');
+}
+function makeDecision(action){
+  const msgs={approve:'Application approved and applicant notified.',request:'Additional documents requested from applicant.',reject:'Application rejected. Rejection letter queued.'};
+  showToast(msgs[action],action==='approve'?'success':'');
+  setTimeout(()=>goOfficerPage('queue-officer'),1500);
+}
+function viewMyApp(ref){goPublicPage('track-public');setTimeout(()=>{document.getElementById('track-ref-input').value=ref;trackApp();},50);}
+function filterType(el,type){document.querySelectorAll('.filter-chips .chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');}
+
+/* FILE UPLOAD */
+function handleFile(event,type){
+  const file=event.target.files[0];
+  if(!file)return;
+  uploadedDocs[type]=true;
+  showUploadPreview(type,file.name);
+}
+function handleDrop(event,type){
+  event.preventDefault();
+  const zone=event.currentTarget;
+  zone.classList.remove('dragover');
+  const file=event.dataTransfer.files[0];
+  if(!file)return;
+  uploadedDocs[type]=true;
+  showUploadPreview(type,file.name);
+}
+function showUploadPreview(type,name){
+  const el=document.getElementById('preview-'+type);
+  const nameEl=document.getElementById('preview-'+type+'-name');
+  if(el&&nameEl){el.style.display='flex';nameEl.textContent=name;}
+  showToast('Document uploaded: '+name,'success');
+}
+
+/* CAMERA */
+function openCamera(target){
+  currentCamTarget=target;
+  document.getElementById('cam-modal').classList.add('open');
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+    navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(s=>{
+      camStream=s;
+      document.getElementById('cam-video').srcObject=s;
+    }).catch(()=>{showToast('Camera access denied. Please allow camera permissions.','error');closeCamera();});
+  } else {showToast('Camera not supported on this device.','error');closeCamera();}
+}
+function closeCamera(){
+  if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
+  document.getElementById('cam-modal').classList.remove('open');
+}
+function capturePhoto(){
+  const video=document.getElementById('cam-video');
+  const canvas=document.getElementById('cam-canvas');
+  canvas.width=video.videoWidth||640;
+  canvas.height=video.videoHeight||480;
+  canvas.getContext('2d').drawImage(video,0,0);
+  const filename='captured_'+currentCamTarget+'.jpg';
+  uploadedDocs[currentCamTarget]=true;
+  showUploadPreview(currentCamTarget,filename);
+  closeCamera();
+}
+
+/* TOAST */
+function showToast(msg,type=''){
+  const container=document.getElementById('toasts');
+  const toast=document.createElement('div');
+  toast.className='toast '+(type==='success'?'success':type==='error'?'error':'');
+  const icon=type==='success'?'ti-circle-check':type==='error'?'ti-alert-circle':'ti-info-circle';
+  toast.innerHTML=`<i class="ti ${icon}"></i> ${msg}`;
+  container.appendChild(toast);
+  setTimeout(()=>toast.remove(),3500);
+}
+
+/* DRAG EVENTS GLOBAL PREVENT */
+document.addEventListener('dragover',e=>e.preventDefault());
+
+/* SIDEBAR HOVER COLOR FOR OFFICER */
+document.querySelectorAll('#officer-app .sidebar-item').forEach(item=>{
+  item.addEventListener('mouseenter',function(){if(!this.classList.contains('active'))this.style.background='#1e3560';});
+  item.addEventListener('mouseleave',function(){if(!this.classList.contains('active'))this.style.background='';});
+});
+</script>
+</body>
+</html>
