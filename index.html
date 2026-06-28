@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,13 +14,54 @@ button{cursor:pointer;font-family:inherit;font-size:14px;border:none;outline:non
 #role-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0d1b3e 0%,#1565C0 100%);padding:24px;}
 .role-card{background:#fff;border-radius:20px;padding:48px 40px;max-width:520px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);}
 .role-logo{font-size:32px;font-weight:700;color:var(--blue);margin-bottom:8px;letter-spacing:-1px;}
-.role-tagline{color:var(--gray);font-size:14px;margin-bottom:36px;}
-.role-btns{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px;}
-.role-btn{border:2px solid var(--border);border-radius:14px;padding:28px 16px;background:#fff;transition:all 0.18s;text-align:center;}
+.role-tagline{color:var(--gray);font-size:14px;margin-bottom:28px;}
+
+/* ROLE SELECTION BUTTONS */
+.role-select-label{font-size:13px;font-weight:600;color:#4a5568;margin-bottom:10px;text-transform:uppercase;letter-spacing:.6px;}
+.role-btns{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px;}
+.role-btn{border:2px solid var(--border);border-radius:14px;padding:20px 14px;background:#fff;transition:all 0.18s;text-align:center;}
 .role-btn:hover{border-color:var(--blue);background:var(--blue-light);transform:translateY(-2px);}
-.role-btn i{font-size:36px;color:var(--blue);margin-bottom:12px;display:block;}
-.role-btn .rb-title{font-size:16px;font-weight:600;color:#1a1a2e;margin-bottom:4px;}
-.role-btn .rb-desc{font-size:12px;color:var(--gray);}
+.role-btn.selected{border-color:var(--blue);background:var(--blue-light);box-shadow:0 0 0 3px rgba(21,101,192,0.15);}
+.role-btn i{font-size:32px;color:var(--gray);margin-bottom:10px;display:block;transition:color 0.18s;}
+.role-btn.selected i,.role-btn:hover i{color:var(--blue);}
+.role-btn .rb-title{font-size:15px;font-weight:600;color:#1a1a2e;margin-bottom:3px;}
+.role-btn .rb-desc{font-size:11px;color:var(--gray);}
+
+/* LOGIN FORM */
+.login-divider{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.login-divider span{font-size:12px;color:#b0bac9;white-space:nowrap;}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.login-form{text-align:left;}
+.login-form .form-group{margin-bottom:16px;}
+.login-form label.lbl{display:block;font-size:13px;font-weight:500;color:#4a5568;margin-bottom:6px;}
+.login-input-wrap{position:relative;}
+.login-input-wrap i.input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:17px;color:#b0bac9;pointer-events:none;}
+.login-input-wrap input{
+  width:100%;border:1.5px solid var(--border);border-radius:10px;
+  padding:10px 14px 10px 40px;font-size:14px;font-family:inherit;
+  background:#fff;color:#1a1a2e;transition:border 0.15s;
+}
+.login-input-wrap input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(21,101,192,0.12);}
+.login-input-wrap .toggle-pw{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;color:#b0bac9;padding:2px;
+  font-size:17px;line-height:1;
+}
+.login-input-wrap .toggle-pw:hover{color:var(--gray);}
+.remember-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.remember-check{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:#4a5568;}
+.remember-check input[type=checkbox]{width:16px;height:16px;accent-color:var(--blue);cursor:pointer;}
+.forgot-link{font-size:12px;color:var(--blue);text-decoration:none;}
+.forgot-link:hover{text-decoration:underline;}
+.btn-login{width:100%;background:var(--blue);color:#fff;border-radius:10px;padding:13px;font-size:15px;font-weight:600;transition:background 0.15s;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-login:hover{background:#1251a3;}
+.login-error{background:var(--red-light);color:var(--red);border-radius:9px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none;align-items:center;gap:8px;border:1px solid #f5c6c3;}
+.login-error.show{display:flex;}
+
+/* Officer extra auth section */
+.officer-auth-section{background:#f0f4ff;border:1.5px solid #c7d8f8;border-radius:12px;padding:16px;margin-bottom:16px;}
+.officer-auth-section .officer-auth-label{font-size:12px;font-weight:600;color:#1565C0;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.officer-auth-section .officer-auth-label i{font-size:15px;}
 
 /* SHARED NAV */
 nav{display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:60px;position:sticky;top:0;z-index:100;}
@@ -217,23 +257,85 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);bo
   </div>
 </div>
 
-<!-- ROLE SELECTION SCREEN -->
+<!-- ROLE SELECTION + LOGIN SCREEN -->
 <div id="role-screen">
   <div class="role-card">
     <div class="role-logo">LoanReady</div>
     <div class="role-tagline">Fast. Transparent. Trusted loan services.</div>
-    <p style="font-size:15px;color:#4a5568;margin-bottom:28px;">Who are you logging in as?</p>
-    <div class="role-btns">
-      <button class="role-btn" onclick="enterAs('public')">
-        <i class="ti ti-user-circle"></i>
-        <div class="rb-title">Applicant</div>
-        <div class="rb-desc">Apply for a loan &amp; track your application</div>
-      </button>
-      <button class="role-btn" onclick="enterAs('officer')">
-        <i class="ti ti-briefcase"></i>
-        <div class="rb-title">Bank Officer</div>
-        <div class="rb-desc">Review &amp; manage loan applications</div>
-      </button>
+
+    <!-- STEP 1: ROLE SELECTION -->
+    <div id="login-step-role">
+      <div class="role-select-label">I am a</div>
+      <div class="role-btns">
+        <button class="role-btn" id="role-btn-public" onclick="selectRole('public')">
+          <i class="ti ti-user-circle"></i>
+          <div class="rb-title">Applicant</div>
+          <div class="rb-desc">Apply for a loan &amp; track your application</div>
+        </button>
+        <button class="role-btn" id="role-btn-officer" onclick="selectRole('officer')">
+          <i class="ti ti-briefcase"></i>
+          <div class="rb-title">Bank Officer</div>
+          <div class="rb-desc">Review &amp; manage loan applications</div>
+        </button>
+      </div>
+
+      <div class="login-divider"><span>Sign in to continue</span></div>
+
+      <!-- LOGIN FORM -->
+      <div class="login-form">
+        <div class="login-error" id="login-error">
+          <i class="ti ti-alert-circle"></i>
+          <span id="login-error-msg">Invalid credentials. Please try again.</span>
+        </div>
+
+        <!-- OFFICER EXTRA AUTH -->
+        <div class="officer-auth-section" id="officer-auth-section" style="display:none;">
+          <div class="officer-auth-label"><i class="ti ti-shield-lock"></i> Officer Authentication</div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label class="lbl">Employee ID</label>
+            <div class="login-input-wrap">
+              <i class="ti ti-id-badge input-icon"></i>
+              <input type="text" id="input-employee-id" placeholder="e.g. EMP-2024-001" autocomplete="off"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="lbl">User ID</label>
+          <div class="login-input-wrap">
+            <i class="ti ti-user input-icon"></i>
+            <input type="text" id="input-user-id" placeholder="Enter your User ID" autocomplete="username"/>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="lbl">Password</label>
+          <div class="login-input-wrap">
+            <i class="ti ti-lock input-icon"></i>
+            <input type="password" id="input-password" placeholder="Enter your password" autocomplete="current-password"/>
+            <button class="toggle-pw" type="button" id="toggle-pw-btn" onclick="togglePassword()" aria-label="Show/hide password">
+              <i class="ti ti-eye" id="pw-eye-icon"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="remember-row">
+          <label class="remember-check">
+            <input type="checkbox" id="remember-me"/>
+            Remember me
+          </label>
+          <a href="#" class="forgot-link" onclick="showToast('Password reset link sent to your registered email.','success');return false;">Forgot password?</a>
+        </div>
+
+        <button class="btn-login" onclick="doLogin()">
+          <i class="ti ti-login"></i> Sign In
+        </button>
+
+        <p style="font-size:11px;color:#b0bac9;text-align:center;margin-top:16px;">
+          <i class="ti ti-shield-check" style="font-size:13px;"></i>
+          Your data is encrypted and secure
+        </p>
+      </div>
     </div>
   </div>
 </div>
@@ -245,8 +347,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue);bo
     <div style="display:flex;align-items:center;gap:16px;">
       <span style="font-size:13px;color:var(--gray);cursor:pointer;" onclick="goPublicPage('dashboard-public')"><i class="ti ti-layout-dashboard"></i> My Applications</span>
       <div class="nav-user">
-        <div class="nav-avatar">AK</div>
-        <span style="font-size:13px;font-weight:500;">Ahmad Kamal</span>
+        <div class="nav-avatar" id="pub-nav-avatar">AK</div>
+        <span style="font-size:13px;font-weight:500;" id="pub-nav-name">Ahmad Kamal</span>
       </div>
       <button class="nav-back" onclick="backToRole()"><i class="ti ti-logout"></i> Sign out</button>
     </div>
@@ -753,6 +855,92 @@ let currentCamTarget='';
 let camStream=null;
 let uploadedDocs={id:false,income:false,bank:false};
 
+// Demo credentials
+const DEMO_CREDS = {
+  public: { userId: 'ahmad.kamal', password: 'password123' },
+  officer: { userId: 'siti.rahmah', password: 'officer123', employeeId: 'EMP-2024-001' }
+};
+
+/* ROLE SELECTION */
+function selectRole(role){
+  currentRole = role;
+  // Update role button styles
+  document.getElementById('role-btn-public').classList.toggle('selected', role==='public');
+  document.getElementById('role-btn-officer').classList.toggle('selected', role==='officer');
+  // Show/hide officer extra auth
+  document.getElementById('officer-auth-section').style.display = role==='officer' ? 'block' : 'none';
+  // Clear error on role switch
+  document.getElementById('login-error').classList.remove('show');
+}
+
+/* LOGIN */
+function doLogin(){
+  const userId = document.getElementById('input-user-id').value.trim();
+  const password = document.getElementById('input-password').value;
+  const errorEl = document.getElementById('login-error');
+  const errorMsg = document.getElementById('login-error-msg');
+
+  if(!currentRole){
+    errorMsg.textContent = 'Please select a role first (Applicant or Bank Officer).';
+    errorEl.classList.add('show');
+    return;
+  }
+  if(!userId || !password){
+    errorMsg.textContent = 'Please enter your User ID and Password.';
+    errorEl.classList.add('show');
+    return;
+  }
+
+  if(currentRole === 'officer'){
+    const empId = document.getElementById('input-employee-id').value.trim();
+    if(!empId){
+      errorMsg.textContent = 'Employee ID is required for Bank Officer login.';
+      errorEl.classList.add('show');
+      return;
+    }
+    // Demo validation for officer
+    if(userId !== DEMO_CREDS.officer.userId || password !== DEMO_CREDS.officer.password || empId !== DEMO_CREDS.officer.employeeId){
+      errorMsg.textContent = 'Invalid credentials or Employee ID. Please try again.';
+      errorEl.classList.add('show');
+      return;
+    }
+    errorEl.classList.remove('show');
+    enterAs('officer');
+    return;
+  }
+
+  // Applicant login demo validation
+  if(userId !== DEMO_CREDS.public.userId || password !== DEMO_CREDS.public.password){
+    errorMsg.textContent = 'Incorrect User ID or Password. Please try again.';
+    errorEl.classList.add('show');
+    return;
+  }
+
+  errorEl.classList.remove('show');
+  enterAs('public');
+}
+
+/* Allow Enter key to submit login */
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){
+    const rs = document.getElementById('role-screen');
+    if(rs && rs.style.display !== 'none') doLogin();
+  }
+});
+
+/* TOGGLE PASSWORD VISIBILITY */
+function togglePassword(){
+  const input = document.getElementById('input-password');
+  const icon = document.getElementById('pw-eye-icon');
+  if(input.type === 'password'){
+    input.type = 'text';
+    icon.className = 'ti ti-eye-off';
+  } else {
+    input.type = 'password';
+    icon.className = 'ti ti-eye';
+  }
+}
+
 function enterAs(role){
   currentRole=role;
   document.getElementById('role-screen').style.display='none';
@@ -766,6 +954,16 @@ function backToRole(){
   document.getElementById('role-screen').style.display='flex';
   document.getElementById('public-app').style.display='none';
   document.getElementById('officer-app').style.display='none';
+  // Reset login form
+  document.getElementById('input-user-id').value='';
+  document.getElementById('input-password').value='';
+  document.getElementById('input-employee-id').value='';
+  document.getElementById('remember-me').checked=false;
+  document.getElementById('login-error').classList.remove('show');
+  document.getElementById('officer-auth-section').style.display='none';
+  document.getElementById('role-btn-public').classList.remove('selected');
+  document.getElementById('role-btn-officer').classList.remove('selected');
+  currentRole='';
 }
 
 /* PUBLIC NAVIGATION */
